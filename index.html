@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ドコモお申込み特典・確認シート</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background: linear-gradient(135deg, #fdf2f2 0%, #f1f5f9 100%);
+        }
+
+        .premium-border {
+            border: 2px solid transparent;
+            background-image: linear-gradient(white, white), linear-gradient(to right, #e11d48, #fbbf24);
+            background-origin: border-box;
+            background-clip: content-box, border-box;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 8mm;
+            }
+            body { background: white !important; }
+            .no-print { display: none !important; }
+            .container { width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; }
+            .card { border: 1px solid #e2e8f0 !important; box-shadow: none !important; }
+            .premium-border { border: 1px solid #e11d48 !important; background: white !important; }
+        }
+
+        input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+        .row-active { background-color: rgba(225, 29, 72, 0.03); }
+    </style>
+</head>
+<body class="min-h-screen pb-10">
+
+    <div class="max-w-3xl mx-auto p-4 md:p-6 container">
+        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden card relative">
+            
+            <div class="h-1.5 w-full bg-gradient-to-right from-rose-600 via-amber-400 to-rose-600 no-print"></div>
+
+            <!-- ヘッダー -->
+            <div class="bg-slate-900 text-white px-8 py-5 flex justify-between items-center relative overflow-hidden">
+                <div class="relative z-10">
+                    <p class="text-[10px] text-rose-400 font-bold tracking-widest mb-1">NTT docomo</p>
+                    <h1 class="text-xl font-black tracking-tighter">ドコモお申込み特典・確認シート</h1>
+                </div>
+                <div class="relative z-10 flex items-center bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700 text-sm font-mono">
+                    <span class="text-slate-400 mr-2">DATE:</span>
+                    <span id="display-date" class="font-bold text-rose-400">---- / -- / --</span>
+                </div>
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-rose-600/20 blur-3xl rounded-full"></div>
+            </div>
+
+            <div class="px-8 py-6 space-y-6">
+                <div class="text-center">
+                    <h2 class="text-2xl font-black text-slate-800 tracking-tight mb-1">〈 ご契約・ご購入特典のご案内 〉</h2>
+                    <p class="text-xs text-slate-500 font-medium">適用される特典内容は以下の通りです。</p>
+                </div>
+
+                <div class="bg-rose-50 border-l-4 border-rose-500 p-4 flex items-center space-x-3">
+                    <div class="bg-rose-500 text-white p-1 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewbox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <span class="text-rose-900 text-sm font-bold italic">「こちらの特典内容で、お手続きを開始いたします」</span>
+                </div>
+
+                <!-- 商材テーブル -->
+                <div class="overflow-hidden">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="text-left text-slate-400 border-b-2 border-slate-100">
+                                <th class="pb-3 font-bold px-2 w-12 text-center">適用</th>
+                                <th class="pb-3 font-bold px-4">商材・キャンペーン項目</th>
+                                <th class="pb-3 font-bold text-right w-32">特典金額 (¥)</th>
+                                <th class="pb-3 font-bold text-center w-16">数量</th>
+                                <th class="pb-3 font-bold text-right w-32 text-rose-600">特典小計</th>
+                            </tr>
+                        </thead>
+                        <tbody id="item-list" class="divide-y divide-slate-50">
+                            <!-- JS Generated Rows -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 総計セクション -->
+                <div class="flex justify-between items-center pt-4 border-t-2 border-slate-100">
+                    <div class="text-slate-400 text-[10px] font-bold tracking-widest">
+                        ※記載金額は全て税込・ポイント還元を含みます
+                    </div>
+                    <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-2xl px-6 py-4 shadow-xl min-w-[280px] premium-border">
+                        <p class="text-[10px] uppercase tracking-widest text-amber-400 mb-0.5 font-black text-right">Estimated Total Benefit</p>
+                        <div class="flex items-baseline justify-end">
+                            <span class="text-xs mr-3 text-slate-400 font-bold">総計</span>
+                            <span class="text-4xl font-black font-mono tracking-tighter" id="grand-total">0</span>
+                            <span class="text-lg ml-1.5 text-amber-400 font-bold">円</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 確認欄 -->
+                <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+                    <div class="flex flex-col items-center space-y-4">
+                        <label class="flex items-center space-x-3 px-8 py-3 rounded-2xl border-2 bg-white border-slate-200 text-slate-400 cursor-pointer transition-all hover:border-rose-300 no-print" id="confirm-label">
+                            <input type="checkbox" id="confirm-check" class="w-5 h-5 rounded-full accent-rose-600 cursor-pointer">
+                            <span class="text-base font-black">上記の内容を承諾し、申込みを進めます</span>
+                        </label>
+                        
+                        <div id="print-confirm-text" class="hidden print:block text-center font-black text-rose-600 text-lg">
+                            ✔ 上記の内容を承諾し、申込みを進めます
+                        </div>
+
+                        <div class="w-full flex justify-end items-end space-x-4 pt-4 border-t border-slate-200/50">
+                            <span class="text-[10px] text-slate-400 font-bold mb-1">CUSTOMER SIGNATURE</span>
+                            <div class="border-b-2 border-slate-300 w-64 h-10 relative">
+                                <span class="absolute -top-3 left-0 text-[9px] text-slate-300 font-serif italic">Sign here</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作ボタン -->
+                <div class="flex flex-col items-center gap-4 no-print">
+                    <button onclick="window.print()" class="w-full md:w-auto bg-rose-600 hover:bg-rose-700 text-white font-black py-4 px-16 rounded-full shadow-lg shadow-rose-200 transition-all hover:-translate-y-0.5 active:scale-95 flex items-center justify-center">
+                        確認シートを出力する (A4)
+                    </button>
+                    <button onclick="if(confirm('入力をすべてクリアしますか？')) location.reload()" class="text-slate-400 hover:text-rose-500 text-xs font-bold tracking-widest uppercase">
+                        Clear All Data
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="text-center py-6 text-[9px] text-slate-400 no-print font-bold tracking-[0.3em] flex flex-col items-center space-y-1">
+            <span>NTT DOCOMO OFFICIAL SALES TOOL</span>
+            <span class="opacity-50">【FJ20260223】</span>
+        </footer>
+    </div>
+
+    <script>
+        // 日付を自動設定
+        window.onload = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            document.getElementById('display-date').innerText = `${year} / ${month} / ${day}`;
+        };
+
+        // 商材項目の整理
+        const items = [
+            { id: 'hikari', name: 'ドコモ光' },
+            { id: 'hikari_set', name: 'ドコモ光+ドコモ端末セット' },
+            { id: 'home5g', name: 'home5G' },
+            { id: 'dcard', name: 'dカード' },
+            { id: 'sim_mnp', name: 'SIMのみMNP' },
+            { id: 'denki', name: 'ドコモでんき' }
+        ];
+
+        const listContainer = document.getElementById('item-list');
+        
+        items.forEach(item => {
+            const row = document.createElement('tr');
+            row.id = `row-${item.id}`;
+            row.className = "transition-all duration-300";
+            row.innerHTML = `
+                <td class="py-4 px-2 text-center">
+                    <input type="checkbox" id="check-${item.id}" onchange="updateCalc()" class="w-5 h-5 rounded-full accent-rose-600 cursor-pointer">
+                </td>
+                <td class="py-4 px-4">
+                    <div class="font-bold text-slate-800">${item.name}</div>
+                </td>
+                <td class="py-4">
+                    <input type="number" id="price-${item.id}" placeholder="0" oninput="updateCalc()" class="w-full text-right bg-transparent border-b-2 border-slate-100 focus:border-rose-400 outline-none transition px-1 font-mono font-bold text-slate-600">
+                </td>
+                <td class="py-4 text-center">
+                    <input type="number" id="qty-${item.id}" value="1" oninput="updateCalc()" class="w-10 text-center bg-transparent border-b-2 border-slate-100 focus:border-rose-400 outline-none transition font-mono font-bold">
+                </td>
+                <td class="py-4 text-right font-mono font-black text-slate-400" id="sub-wrap-${item.id}">
+                    <span id="sub-${item.id}">0</span>
+                </td>
+            `;
+            listContainer.appendChild(row);
+        });
+
+        function updateCalc() {
+            let grandTotal = 0;
+            items.forEach(item => {
+                const checked = document.getElementById(`check-${item.id}`).checked;
+                const price = parseInt(document.getElementById(`price-${item.id}`).value) || 0;
+                const qty = parseInt(document.getElementById(`qty-${item.id}`).value) || 0;
+                
+                const sub = checked ? price * qty : 0;
+                document.getElementById(`sub-${item.id}`).innerText = sub.toLocaleString();
+                
+                const row = document.getElementById(`row-${item.id}`);
+                const subWrap = document.getElementById(`sub-wrap-${item.id}`);
+                
+                if(checked) {
+                    row.classList.add('row-active', 'translate-x-1');
+                    subWrap.classList.replace('text-slate-400', 'text-rose-600');
+                    grandTotal += sub;
+                } else {
+                    row.classList.remove('row-active', 'translate-x-1');
+                    subWrap.classList.replace('text-rose-600', 'text-slate-400');
+                }
+            });
+            document.getElementById('grand-total').innerText = grandTotal.toLocaleString();
+        }
+
+        document.getElementById('confirm-check').addEventListener('change', function(e) {
+            const label = document.getElementById('confirm-label');
+            const printText = document.getElementById('print-confirm-text');
+            if(e.target.checked) {
+                label.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-700', 'scale-105');
+                printText.classList.remove('hidden');
+            } else {
+                label.classList.remove('bg-rose-50', 'border-rose-500', 'text-rose-700', 'scale-105');
+                printText.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
+
